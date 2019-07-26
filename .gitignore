@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+env
+.vscode
+__pycache__
+simpleui
+media
