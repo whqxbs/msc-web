@@ -17,4 +17,19 @@
     {% else %}
     <h1>福利题啦啦啦</h1>
     {% endif %}
+
+    <form action="/tests/{{request.session.user_id}}" id="answer" method="post">
+        {% csrf_token %}
+        {% for q in web %}
+            问题{{forloop.counter}}
+            <div class="form-group">
+                <li>{{q.title}}</li>
+                <li>{{q.detail}}</li>
+                <input type="text" name="answer" id="q{{ forloop.counter }}" value="{{ answer.id }}">
+            </div>
+        {% empty %}
+            <li>咕咕咕</li>
+        {% endfor %}
+        <button type="submit">保存</button>
+    </form>
 {% endblock content %}

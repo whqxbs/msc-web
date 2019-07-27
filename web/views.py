@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from . import models
-from .forms import UserForm, RegisterForm
+from .forms import UserForm, RegisterForm, AnswerForm
 import hashlib
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
  
 def hash_code(s, salt='mysite'):# 加点盐
     h = hashlib.sha256()
@@ -11,7 +12,7 @@ def hash_code(s, salt='mysite'):# 加点盐
  
 def index(request):
     pass
-    return render(request,'login/index.html')
+    return render(request,'index.html')
  
 
 def login(request):
@@ -43,7 +44,7 @@ def login(request):
 def register(request):
     if request.session.get('is_login', None):
         # 登录状态不允许注册。你可以修改这条原则！
-        return redirect("/index/")
+        return redirect("/")
     if request.method == "POST":
         register_form = RegisterForm(request.POST)
         message = "请检查填写的内容！"
@@ -54,7 +55,6 @@ def register(request):
             password1 = register_form.cleaned_data['password1']
             password2 = register_form.cleaned_data['password2']
             birth = register_form.cleaned_data['birth']
-            # print(register_form.cleaned_data['qq'])
             qq = register_form.cleaned_data['qq']
             phone = register_form.cleaned_data['phone']
             self_introduction = register_form.cleaned_data['self_introduction']
@@ -70,8 +70,6 @@ def register(request):
  
                 # 当一切都OK的情况下，创建新用户
 
-                print(type(qq))
-                print(name)
                 new_user = models.User.objects.create(name=name, password=hash_code(password1), email=email, sex=sex, phone=phone, qq=qq, self_introduction=self_introduction, birth=birth)
 
                 return redirect('/login/')  # 自动跳转到登录页面
@@ -88,4 +86,17 @@ def logout(request):
 def tests(request):
     if not request.session.get('is_login', None):
         return redirect("/login/")
-    return render(request, 'tests.html')
+    web = models.Questions.objects.all()
+
+    if request.method == "POST":
+        answer_form = AnswerForm(request.POST)
+        result = request.POST.getlist('answer', '') 
+        return render(request, 'tests.html', locals())
+    
+    answer_form = AnswerForm(request.POST)
+    return render(request, 'tests.html', locals())
+
+
+def answer(request, user_id):
+    if request.method == "GET":
+        return HttpResponseForbidden()

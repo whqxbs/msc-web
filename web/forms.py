@@ -19,3 +19,6 @@ class RegisterForm(forms.Form):
     qq = forms.IntegerField(label='QQ', widget=forms.NumberInput(attrs={'class': 'form-control'}))
     phone = forms.IntegerField(label='手机', widget=forms.NumberInput(attrs={'class': 'form-control'}))
     self_introduction = forms.CharField(label="自我介绍", max_length=640, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+class AnswerForm(forms.Form):
+    answer = forms.CharField(label="回答", max_length=640, widget=forms.TextInput(attrs={'class': 'form-control'}))
