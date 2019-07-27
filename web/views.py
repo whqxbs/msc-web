@@ -86,4 +86,5 @@ def logout(request):
     return redirect("/")
 
 
-
+def tests(request):
+    return render(request, 'tests.html')
